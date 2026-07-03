@@ -1,0 +1,57 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model caja_sesiones {
+  id             Int       @id @default(autoincrement())
+  usuario_id     Int?
+  fecha_apertura DateTime? @default(now()) @db.Timestamp(6)
+  fecha_cierre   DateTime? @db.Timestamp(6)
+  saldo_inicial  Decimal   @db.Decimal(10, 2)
+  saldo_final    Decimal?  @db.Decimal(10, 2)
+  usuarios       usuarios? @relation(fields: [usuario_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  ventas         ventas[]
+}
+
+model detalle_ventas {
+  id              Int        @id @default(autoincrement())
+  venta_id        Int?
+  producto_id     Int?
+  cantidad        Int
+  precio_unitario Decimal    @db.Decimal(10, 2)
+  productos       productos? @relation(fields: [producto_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  ventas          ventas?    @relation(fields: [venta_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model productos {
+  id             Int              @id @default(autoincrement())
+  nombre         String           @db.VarChar(100)
+  descripcion    String?
+  precio         Decimal          @db.Decimal(10, 2)
+  stock          Int              @default(0)
+  detalle_ventas detalle_ventas[]
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model usuarios {
+  id            Int             @id @default(autoincrement())
+  nombre        String          @db.VarChar(100)
+  password_hash String          @db.VarChar(255)
+  rol           String          @db.VarChar(20)
+  caja_sesiones caja_sesiones[]
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model ventas {
+  id             Int              @id @default(autoincrement())
+  sesion_caja_id Int?
+  total          Decimal          @db.Decimal(10, 2)
+  metodo_pago    String           @db.VarChar(20)
+  fecha          DateTime?        @default(now()) @db.Timestamp(6)
+  detalle_ventas detalle_ventas[]
+  caja_sesiones  caja_sesiones?   @relation(fields: [sesion_caja_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
