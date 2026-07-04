@@ -52,5 +52,5 @@ API RESTful robusta y segura construida para la gestión integral de un **Punto 
 
 1. **Clonar el repositorio:**
    ```bash
-   git clone [https://github.com/tu-usuario/pos-backend.git](https://github.com/tu-usuario/pos-backend.git)
+   git clone [https://github.com/bryanmiranda138/pos-backend.git](https://github.com/bryanmiranda138/pos-backend.git)
    cd pos-backend
